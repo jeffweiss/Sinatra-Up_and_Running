@@ -24,7 +24,7 @@ get '/throw/:type' do
   end
   
   # now we can select a random throw for the computer
-  computer_throw = @throws.sample
+  computer_throw = @throws[rand @throws.size]
   
   # compare the play and computer throws to determine a winner
   if player_throw == computer_throw
