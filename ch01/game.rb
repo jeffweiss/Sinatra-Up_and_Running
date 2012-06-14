@@ -13,5 +13,13 @@ before do
 end
 
 get '/throw/:type' do
-  # play here
+  # the params[] hash stores querystring and form data
+  player_throw = params[:type].to_sym
+  
+  # in the case of a player providing a throw that is not valid,
+  # we halt with a status code of 403 (Forbidden) and let them
+  # know they need to make a valid throw to play.
+  unless @throws.include? player_throw
+    halt 403, "You must throw one of the following: #{@throws}"
+  end
 end
