@@ -5,5 +5,5 @@ before do
 end
 
 get '/' do
-  request.env.map { |e| e.to_s + "\n" }
+  request.env.map { |e| e.inspect + "\n" }
 end
