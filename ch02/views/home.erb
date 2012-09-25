@@ -5,6 +5,8 @@
   <title>Using instance variables</title>
 </head>
 <body>
-  <h1>Hello, <%= @name %>!</h1>
+  <% @users.each do |user| %>
+    <p><%= user %></p>
+  <% end %>
 </body>
 </html>
