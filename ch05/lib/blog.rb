@@ -4,27 +4,29 @@ require 'time'
 
 class Blog < Sinatra::Base
   set :root, File.expand_path('../../', __FILE__)
+  set :articles, []
 
   # loop through all the article files
   Dir.glob "#{root}/articles/*.md" do |file|
-    # parse metadata and content from file
-    meta, content = File.read(file).split("\n\n", 2)
-
-    # generate a metadata object
-    article = OpenStruct.new YAML.load(meta)
-
-    # convert the date to a time object
-    article.date = Time.parse article.date.to_s
-
-    # add the content
+    meta, content   = File.read(file).split("\n\n", 2)
+    article         = OpenStruct.new YAML.load(meta)
+    article.date    = Time.parse article.date.to_s
     article.content = content
+    article.slug    = File.basename file, '.md'
 
-    # generate a slug for the url
-    article.slug = File.basename file, '.md'
-
-    # set up the route
     get "/#{article.slug}" do
       erb :post, :locals => { :article => article }
     end
+
+    # add article to list of articles
+    articles << article
+  end
+
+  # Sort articles by date, display new articles first
+  articles.sort_by! { |article| article.date }
+  article.reverse!
+
+  get '/' do
+    erb :index
   end
 end
