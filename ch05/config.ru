@@ -1,8 +1,11 @@
 $LOAD_PATH.unshift 'lib'
-
-# this is optional
-require 'rack/cache'
-use Rack::Cache
-
 require 'blog'
+if ENV['URL'] and ENV['DATABASE_URL']
+  # we're on heroku, no cache needed
+  # also, it's a read-only file system
+  GithubHook.disable :autopull
+elsif Blog.production?
+  require 'rake/cache'
+  use Rack::Cache
+end
 run Blog
